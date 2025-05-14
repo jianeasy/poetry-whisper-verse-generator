@@ -5,6 +5,7 @@ interface GeneratePoemRequest {
   prompt: string;
   theme?: string;
   length?: "short" | "medium" | "long";
+  genre?: string; // 添加体裁参数
 }
 
 interface PoemResponse {
@@ -94,7 +95,6 @@ function getRandomPoem(style: string, prompt: string): PoemResponse {
 export async function generatePoem(
   request: GeneratePoemRequest
 ): Promise<PoemResponse> {
-  // Simulate API delay
   console.log("generatePoem api", request);
 
   const response: {
@@ -107,12 +107,13 @@ export async function generatePoem(
     };
   } = await generatePoemApi({
     inputs: {
-      input1: "思乡", //主题
-      input2: "五言绝句",
-      input3: "李白", //风格
-      input4: "伤感",
-      input5: "荷花",
-      input6: "", // 词牌名
+      input1: request.prompt, // 主题
+      input2:
+        request.style === "shi" ? request.genre || "五言绝句" : request.style, // 体裁
+      input3: "", // 风格
+      input4: "",
+      input5: "",
+      input6: request.style === "ci" ? "念奴娇" : "", // 如果是词，则可以设置词牌名
     },
     response_mode: "blocking",
     user: "abc-123",

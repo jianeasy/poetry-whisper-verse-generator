@@ -15,10 +15,10 @@ import { useToast } from "@/hooks/use-toast";
 import { poetryStyles } from "@/utils/poetryStyles";
 import { generatePoem, savePoemToHistory } from "@/services/poemService";
 import PoemDisplay from "./PoemDisplay";
-// import { generatePoem } from "@/request/api";
 
 const PoemGenerator: React.FC = () => {
   const [selectedStyle, setSelectedStyle] = useState("shi");
+  const [selectedGenre, setSelectedGenre] = useState("五言绝句");
   const [prompt, setPrompt] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedPoem, setGeneratedPoem] = useState<{
@@ -28,9 +28,23 @@ const PoemGenerator: React.FC = () => {
     style: string;
     timestamp: number;
   } | null>(null);
-
+  const [selectedCiPai, setSelectedCiPai] = useState("念奴娇");
   const { toast } = useToast();
 
+  const genres = [
+    { id: "wuyan", name: "五言绝句", description: "五字一句，四句一首" },
+    { id: "qiyan", name: "七言绝句", description: "七字一句，四句一首" },
+    { id: "wulv", name: "五言律诗", description: "五字一句，八句一首" },
+    { id: "qilv", name: "七言律诗", description: "七字一句，八句一首" },
+  ];
+  const ciPaiList = [
+    { id: "niannujiao", name: "念奴娇", description: "双调，59字" },
+    { id: "shuidiaogetou", name: "水调歌头", description: "双调，92字" },
+    { id: "busuanzi", name: "卜算子", description: "双调，44字" },
+    { id: "yujie", name: "雨霖铃", description: "双调，94字" },
+    { id: "manjianghong", name: "满江红", description: "双调，94字" },
+    { id: "qingpingdiao", name: "清平调", description: "双调，44字" },
+  ];
   const handleGenerate = async () => {
     if (!prompt) {
       toast({
@@ -48,6 +62,7 @@ const PoemGenerator: React.FC = () => {
         style: selectedStyle,
         prompt,
         length: "medium",
+        genre: selectedGenre,
       });
 
       setGeneratedPoem(poem);
@@ -104,6 +119,61 @@ const PoemGenerator: React.FC = () => {
                   ))}
                 </RadioGroup>
               </div>
+
+              {selectedStyle === "shi" && (
+                <div className="space-y-4">
+                  <Label>选择体裁</Label>
+                  <RadioGroup
+                    value={selectedGenre}
+                    onValueChange={setSelectedGenre}
+                    className="grid grid-cols-1 md:grid-cols-2 gap-4"
+                  >
+                    {genres.map((genre) => (
+                      <div
+                        key={genre.id}
+                        className="flex items-start space-x-2"
+                      >
+                        <RadioGroupItem value={genre.name} id={genre.id} />
+                        <div className="grid gap-1.5">
+                          <Label htmlFor={genre.id} className="font-bold">
+                            {genre.name}
+                          </Label>
+                          <p className="text-sm text-muted-foreground">
+                            {genre.description}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </RadioGroup>
+                </div>
+              )}
+              {selectedStyle === "ci" && (
+                <div className="space-y-4">
+                  <Label>选择词牌名</Label>
+                  <RadioGroup
+                    value={selectedCiPai}
+                    onValueChange={setSelectedCiPai}
+                    className="grid grid-cols-1 md:grid-cols-2 gap-4"
+                  >
+                    {ciPaiList.map((cipai) => (
+                      <div
+                        key={cipai.id}
+                        className="flex items-start space-x-2"
+                      >
+                        <RadioGroupItem value={cipai.name} id={cipai.id} />
+                        <div className="grid gap-1.5">
+                          <Label htmlFor={cipai.id} className="font-bold">
+                            {cipai.name}
+                          </Label>
+                          <p className="text-sm text-muted-foreground">
+                            {cipai.description}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </RadioGroup>
+                </div>
+              )}
 
               <div className="space-y-2">
                 <Label htmlFor="prompt">创作灵感</Label>
