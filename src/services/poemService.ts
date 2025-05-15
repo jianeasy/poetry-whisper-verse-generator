@@ -1,5 +1,6 @@
+
 import { poetryStyles } from "../utils/poetryStyles";
-import { generatePoemApi } from "@/request/api";
+import { generatePoemApi, savePoemApi } from "@/request/api";
 interface GeneratePoemRequest {
   style: string;
   prompt: string;
@@ -14,6 +15,7 @@ interface PoemResponse {
   author: string;
   style: string;
   timestamp: number;
+  uuid?: string;
 }
 
 // Sample poems for different styles
@@ -104,6 +106,7 @@ export async function generatePoem(
         title: string;
         analysis: string;
       };
+      uuid?: string;
     };
   } = await generatePoemApi({
     inputs: {
@@ -122,16 +125,41 @@ export async function generatePoem(
   const content = response.data.outputs.content;
   const title = response.data.outputs.title;
   const analysis = response.data.outputs.analysis;
-  return {
-    title: title || "无题",
-    content: content,
-    author: "佚名",
-    style: "",
-    timestamp: Date.now(),
-  };
-  // await new Promise((resolve) => setTimeout(resolve, 1500));
-
-  return getRandomPoem(request.style, request.prompt);
+  
+  // Save the poem to get a UUID
+  const toolSettings = JSON.stringify({
+    style: request.style,
+    prompt: request.prompt,
+    genre: request.style === "shi" ? request.genre : undefined,
+  });
+  
+  try {
+    const saveResponse: any = await savePoemApi({
+      toolName: "诗词生成工具",
+      toolType: request.style,
+      setting: toolSettings,
+    });
+    
+    const uuid = saveResponse?.data?.uuid || response.data.uuid;
+    
+    return {
+      title: title || "无题",
+      content: content,
+      author: "佚名",
+      style: poetryStyles.find((s) => s.id === request.style)?.name || "诗",
+      timestamp: Date.now(),
+      uuid: uuid,
+    };
+  } catch (error) {
+    console.error("Failed to save poem:", error);
+    return {
+      title: title || "无题",
+      content: content,
+      author: "佚名",
+      style: poetryStyles.find((s) => s.id === request.style)?.name || "诗",
+      timestamp: Date.now(),
+    };
+  }
 }
 
 // Get user's poem history (would be stored in localStorage or a database in a real app)
