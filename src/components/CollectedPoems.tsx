@@ -12,7 +12,15 @@ import { useToast } from "@/hooks/use-toast";
 import { Button } from "./ui/button";
 
 const CollectedPoems: React.FC<{ refreshKey: number }> = ({ refreshKey }) => {
-  const [collections, setCollections] = useState<[]>([]);
+  const [collections, setCollections] = useState<
+    {
+      title: string;
+      content: string;
+      author: string;
+      style: string;
+      uuid?: string;
+    }[]
+  >([]);
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
