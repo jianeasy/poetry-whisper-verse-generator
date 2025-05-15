@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { BookmarkPlus, BookmarkCheck } from "lucide-react";
@@ -29,8 +29,19 @@ const PoemDisplay: React.FC<PoemDisplayProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   
-  // Split the content by newlines to display each line separately
-  const lines = poem.content.split("\n");
+  // Split by Chinese punctuation marks and newlines to display each segment separately
+  const punctuationRegex = /([，。！？；：、]|\n)/g;
+  const segments = poem.content.split(punctuationRegex);
+  
+  // Group segments with their punctuation
+  const lines: string[] = [];
+  for (let i = 0; i < segments.length; i += 2) {
+    const text = segments[i];
+    const punctuation = segments[i + 1] || "";
+    if (text) {
+      lines.push(text + punctuation);
+    }
+  }
 
   const handleCollect = async () => {
     if (!poem.uuid) {
@@ -81,7 +92,7 @@ const PoemDisplay: React.FC<PoemDisplayProps> = ({
           vertical ? "poem-scroll h-80 py-6 px-8" : "py-6"
         }`}
       >
-        <div className="flex justify-between items-start mb-4">
+        <div className="flex justify-between items-center mb-4">
           <h3
             className={`text-2xl font-poetry ${
               vertical ? "" : "text-center"
@@ -119,7 +130,6 @@ const PoemDisplay: React.FC<PoemDisplayProps> = ({
           }`}
         >
           <span className="mr-3">{poem.style}</span>
-          {/* <span>{poem.author}</span> */}
         </div>
       </div>
     </div>
