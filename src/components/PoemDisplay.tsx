@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -28,11 +27,11 @@ const PoemDisplay: React.FC<PoemDisplayProps> = ({
   const [isCollected, setIsCollected] = useState(poem.collected || false);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
-  
+
   // Split by Chinese punctuation marks and newlines to display each segment separately
   const punctuationRegex = /([，。！？；：、]|\n)/g;
   const segments = poem.content.split(punctuationRegex);
-  
+
   // Group segments with their punctuation
   const lines: string[] = [];
   for (let i = 0; i < segments.length; i += 2) {
@@ -93,10 +92,13 @@ const PoemDisplay: React.FC<PoemDisplayProps> = ({
         }`}
       >
         <div className="flex justify-between items-center mb-4">
+          <Button
+            style={{ visibility: "hidden" }}
+            variant="ghost"
+            size="icon"
+          ></Button>
           <h3
-            className={`text-2xl font-poetry ${
-              vertical ? "" : "text-center"
-            }`}
+            className={`text-2xl font-poetry ${vertical ? "" : "text-center"}`}
           >
             《{poem.title}》
           </h3>
@@ -124,13 +126,13 @@ const PoemDisplay: React.FC<PoemDisplayProps> = ({
             </p>
           ))}
         </div>
-        <div
+        {/* <div
           className={`text-sm text-muted-foreground ${
             vertical ? "" : "text-center"
           }`}
         >
           <span className="mr-3">{poem.style}</span>
-        </div>
+        </div> */}
       </div>
     </div>
   );

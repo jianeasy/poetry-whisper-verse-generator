@@ -1,6 +1,5 @@
-
-import React from 'react';
-import { Book } from 'lucide-react';
+import React from "react";
+import { Book } from "lucide-react";
 
 const Header: React.FC = () => {
   return (
@@ -13,13 +12,28 @@ const Header: React.FC = () => {
         <nav>
           <ul className="flex gap-6">
             <li>
-              <a href="#" className="text-ink/70 hover:text-cinnabar transition-colors">首页</a>
+              <a
+                href="#"
+                className="text-ink/70 hover:text-cinnabar transition-colors"
+              >
+                首页
+              </a>
             </li>
             <li>
-              <a href="#history" className="text-ink/70 hover:text-cinnabar transition-colors">历史</a>
+              <a
+                href="#collections"
+                className="text-ink/70 hover:text-cinnabar transition-colors"
+              >
+                收藏
+              </a>
             </li>
             <li>
-              <a href="#about" className="text-ink/70 hover:text-cinnabar transition-colors">关于</a>
+              <a
+                href="#about"
+                className="text-ink/70 hover:text-cinnabar transition-colors"
+              >
+                关于
+              </a>
             </li>
           </ul>
         </nav>

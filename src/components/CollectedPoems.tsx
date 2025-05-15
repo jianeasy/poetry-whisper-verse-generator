@@ -1,13 +1,18 @@
-
 import React, { useState, useEffect } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { getCollectPoemListApi } from "@/request/api";
 import PoemDisplay from "./PoemDisplay";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "./ui/button";
 
-const CollectedPoems: React.FC = () => {
-  const [collections, setCollections] = useState<any[]>([]);
+const CollectedPoems: React.FC<{ refreshKey: number }> = ({ refreshKey }) => {
+  const [collections, setCollections] = useState<[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
@@ -17,23 +22,31 @@ const CollectedPoems: React.FC = () => {
   const fetchCollections = async (pageNum = 1, refresh = false) => {
     setIsLoading(true);
     try {
-      const response: any = await getCollectPoemListApi({
+      const response = await getCollectPoemListApi({
         page: pageNum,
         pageSize,
-        toolName: "诗词生成工具",
+        toolName: "ai-poem-generate",
       });
-      
-      const newCollections = response.data?.list || [];
-      
+      console.log("response ", response.data);
+      const { total } = response.data;
+      const collections = response.data.list.map((item) => {
+        return {
+          ...JSON.parse(JSON.parse(item.setting).setting),
+          uuid: item.uuid,
+        };
+      });
+      console.log("collections ", collections);
+
       if (refresh) {
-        setCollections(newCollections);
+        setCollections(collections);
       } else {
-        setCollections((prev) => [...prev, ...newCollections]);
+        setCollections((prev) => [...prev, ...collections]);
       }
-      
-      // Check if we've loaded all items
-      setHasMore(newCollections.length === pageSize);
-      
+
+      // 根据当前页数和总数判断是否还有更多数据
+      const hasMoreData = pageNum * pageSize < total;
+      setHasMore(hasMoreData);
+
       setPage(pageNum);
     } catch (error) {
       toast({
@@ -48,7 +61,7 @@ const CollectedPoems: React.FC = () => {
 
   useEffect(() => {
     fetchCollections(1, true);
-  }, []);
+  }, [refreshKey]);
 
   const handleLoadMore = () => {
     if (!isLoading && hasMore) {
@@ -62,13 +75,22 @@ const CollectedPoems: React.FC = () => {
 
   if (collections.length === 0 && !isLoading) {
     return (
-      <section id="collections" className="py-16 px-4 bg-parchment-light bg-opacity-30">
+      <section
+        id="collections"
+        className="py-16 px-4 bg-parchment-light bg-opacity-30"
+      >
         <div className="poetry-container">
-          <h2 className="text-3xl font-poetry mb-8 text-center">我的<span className="text-cinnabar">收藏</span></h2>
+          <h2 className="text-3xl font-poetry mb-8 text-center">
+            我的<span className="text-cinnabar">收藏</span>
+          </h2>
           <Card className="bg-white/80 border-ink/10">
             <CardContent className="py-12 text-center">
-              <p className="text-lg text-muted-foreground">您尚未收藏任何诗词</p>
-              <p className="text-md text-muted-foreground mt-2">生成诗词后点击收藏按钮即可加入收藏</p>
+              <p className="text-lg text-muted-foreground">
+                您尚未收藏任何诗词
+              </p>
+              <p className="text-md text-muted-foreground mt-2">
+                生成诗词后点击收藏按钮即可加入收藏
+              </p>
             </CardContent>
           </Card>
         </div>
@@ -77,10 +99,15 @@ const CollectedPoems: React.FC = () => {
   }
 
   return (
-    <section id="collections" className="py-16 px-4 bg-parchment-light bg-opacity-30">
+    <section
+      id="collections"
+      className="py-16 px-4 bg-parchment-light bg-opacity-30"
+    >
       <div className="poetry-container">
-        <h2 className="text-3xl font-poetry mb-8 text-center">我的<span className="text-cinnabar">收藏</span></h2>
-        
+        <h2 className="text-3xl font-poetry mb-8 text-center">
+          我的<span className="text-cinnabar">收藏</span>
+        </h2>
+
         <div className="grid grid-cols-1 gap-6">
           {isLoading && collections.length === 0 ? (
             <Card className="bg-white/80 border-ink/10">
@@ -98,21 +125,27 @@ const CollectedPoems: React.FC = () => {
                 uuid: item.uuid,
                 collected: true,
               };
-              
+
               return (
-                <Card key={item.uuid || index} className="bg-white/80 border-ink/10">
+                <Card
+                  key={item.uuid || index}
+                  className="bg-white/80 border-ink/10"
+                >
                   <CardContent className="py-6">
-                    <PoemDisplay poem={poem} refreshCollections={refreshCollections} />
+                    <PoemDisplay
+                      poem={poem}
+                      refreshCollections={refreshCollections}
+                    />
                   </CardContent>
                 </Card>
               );
             })
           )}
-          
+
           {hasMore && (
             <div className="flex justify-center mt-4">
-              <Button 
-                onClick={handleLoadMore} 
+              <Button
+                onClick={handleLoadMore}
                 disabled={isLoading}
                 variant="outline"
               >

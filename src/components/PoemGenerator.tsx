@@ -16,7 +16,11 @@ import { poetryStyles } from "@/utils/poetryStyles";
 import { generatePoem, savePoemToHistory } from "@/services/poemService";
 import PoemDisplay from "./PoemDisplay";
 
-const PoemGenerator: React.FC = () => {
+interface PoemGeneratorProps {
+  setRefreshKey: (key: number) => void;
+}
+
+const PoemGenerator: React.FC<PoemGeneratorProps> = ({ setRefreshKey }) => {
   const [selectedStyle, setSelectedStyle] = useState("shi");
   const [selectedGenre, setSelectedGenre] = useState("五言绝句");
   const [prompt, setPrompt] = useState("");
@@ -82,7 +86,13 @@ const PoemGenerator: React.FC = () => {
       setIsGenerating(false);
     }
   };
-
+  const handelRefreshCollections = () => {
+    setRefreshKey(Math.floor(Math.random() * 1000));
+    // toast({
+    //   title: "收藏成功",
+    //   description: `《${generatedPoem?.title}》已添加到收藏`,
+    // });
+  };
   return (
     <section id="generator" className="py-16 px-4">
       <div className="poetry-container">
@@ -204,7 +214,10 @@ const PoemGenerator: React.FC = () => {
             </CardHeader>
             <CardContent className="flex-1 flex items-center justify-center">
               {generatedPoem ? (
-                <PoemDisplay poem={generatedPoem} />
+                <PoemDisplay
+                  poem={generatedPoem}
+                  refreshCollections={handelRefreshCollections}
+                />
               ) : (
                 <div className="text-center text-muted-foreground italic">
                   点击「生成诗词」按钮开始创作...
