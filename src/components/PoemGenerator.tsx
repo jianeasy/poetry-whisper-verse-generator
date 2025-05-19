@@ -15,6 +15,7 @@ import { useToast } from "@/hooks/use-toast";
 import { poetryStyles } from "@/utils/poetryStyles";
 import { generatePoem, savePoemToHistory } from "@/services/poemService";
 import PoemDisplay from "./PoemDisplay";
+import VoiceInput from "./VoiceInput";
 
 interface PoemGeneratorProps {
   setRefreshKey: (key: number) => void;
@@ -93,6 +94,11 @@ const PoemGenerator: React.FC<PoemGeneratorProps> = ({ setRefreshKey }) => {
     //   description: `《${generatedPoem?.title}》已添加到收藏`,
     // });
   };
+
+  const handleVoiceInput = (transcript: string) => {
+    setPrompt(transcript);
+  };
+
   return (
     <section id="generator" className="py-16 px-4">
       <div className="poetry-container">
@@ -186,7 +192,10 @@ const PoemGenerator: React.FC<PoemGeneratorProps> = ({ setRefreshKey }) => {
               )}
 
               <div className="space-y-2">
-                <Label htmlFor="prompt">创作灵感</Label>
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="prompt">创作灵感</Label>
+                  <VoiceInput onTranscript={handleVoiceInput} />
+                </div>
                 <Textarea
                   id="prompt"
                   placeholder="请输入您想要表达的主题、意境或情感..."
