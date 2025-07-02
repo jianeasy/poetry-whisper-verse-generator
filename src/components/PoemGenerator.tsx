@@ -114,7 +114,7 @@ const PoemGenerator: React.FC<PoemGeneratorProps> = ({ setRefreshKey }) => {
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-4">
-                <Label>选择诗词风格</Label>
+                <Label>1.选择诗词风格</Label>
                 <RadioGroup
                   value={selectedStyle}
                   onValueChange={setSelectedStyle}
@@ -138,7 +138,7 @@ const PoemGenerator: React.FC<PoemGeneratorProps> = ({ setRefreshKey }) => {
 
               {selectedStyle === "shi" && (
                 <div className="space-y-4">
-                  <Label>选择体裁</Label>
+                  <Label>2.选择体裁</Label>
                   <RadioGroup
                     value={selectedGenre}
                     onValueChange={setSelectedGenre}
@@ -165,7 +165,7 @@ const PoemGenerator: React.FC<PoemGeneratorProps> = ({ setRefreshKey }) => {
               )}
               {selectedStyle === "ci" && (
                 <div className="space-y-4">
-                  <Label>选择词牌名</Label>
+                  <Label>2.选择词牌名</Label>
                   <RadioGroup
                     value={selectedCiPai}
                     onValueChange={setSelectedCiPai}
@@ -193,7 +193,7 @@ const PoemGenerator: React.FC<PoemGeneratorProps> = ({ setRefreshKey }) => {
 
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="prompt">创作灵感</Label>
+                  <Label htmlFor="prompt">3.创作灵感</Label>
                   <VoiceInput onTranscript={handleVoiceInput} />
                 </div>
                 <Textarea

@@ -19,7 +19,7 @@ const Index = () => {
         <PoemGenerator setRefreshKey={setRefreshKey} />
         <CollectedPoems refreshKey={refreshKey} />
         {/* <PoemHistory /> */}
-        <About />
+        {/* <About /> */}
       </main>
       <Footer />
     </div>

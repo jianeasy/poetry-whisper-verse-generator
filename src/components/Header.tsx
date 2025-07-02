@@ -27,14 +27,14 @@ const Header: React.FC = () => {
                 收藏
               </a>
             </li>
-            <li>
+            {/* <li>
               <a
                 href="#about"
                 className="text-ink/70 hover:text-cinnabar transition-colors"
               >
                 关于
               </a>
-            </li>
+            </li> */}
           </ul>
         </nav>
       </div>
